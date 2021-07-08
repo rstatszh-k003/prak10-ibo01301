@@ -44,6 +44,10 @@ library(gt)        # Package wird für Funktion gt() geladen
 
 ```{r}
 
+einkaeufe <- read_csv("data/supermarkt/einkaeufe.csv")
+kundenprofile <- read_csv("data/supermarkt/kundenprofile.csv")
+preise <- read_csv("data/supermarkt/preise.csv")
+
 ```
 
 2. Strick das Dokument und dann: git add, commit, push alle Veränderung zurück auf GitHub
@@ -125,7 +129,7 @@ einkaeufe_kosten_sum <- einkaeufe_kosten %>%
 
 2. Starte mit dem Objekt `einkaeufe_kosten_sum` und nutze die Funktion `left_join()` um dieses mit dem Objekt `kundenprofile` zusammenzufügen. Selektiere dann nur die Spalten 'vorname', 'nachname', 'summe' und 'email'. Speicher das Ergebnis als ein neues Objekt in deiner Arbeitsumgebung (Environment) mit dem Namen `kunden_tab`.
 
-```{r}
+```{r, eval=F}
 
 kunden_tab <- einkaeufe_kosten_sum %>% 
   left_join(kundenprofile) %>% 
@@ -139,21 +143,21 @@ kunden_tab <- einkaeufe_kosten_sum %>%
 
 1. Nutze das Objekt `kunden_tab` und den Pipe-Operator um eine Code-Sequenz zu schreiben welche das Objekt `kunden_tab` mit der Funktion `gt()` verbindet. 
 
-```{r}
+```{r, eval=F}
 kunden_tab %>% 
   gt()
 ```
 
 2. Nutze das Objekt `kunden_tab` und den Pipe-Operator um eine Code-Sequenz zu schreiben welche das Objekt `kunden_tab` mit der Funktion `datatable()` verbindet.
 
-```{r}
+```{r, eval=F}
 kunden_tab %>% 
   datatable()
 ```
 
 3. Nutze das Objekt `kunden_tab` und den Pipe-Operator um eine Code-Sequenz zu schreiben welche das Objekt `kunden_tab` mit der Funktion `kable()` verbindet.
 
-```{r}
+```{r, eval=F}
 kunden_tab %>% 
   kable()
 ```
