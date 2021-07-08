@@ -251,7 +251,8 @@ div.tocify {
 
 library(knitr)     # Package wird für Funktion kable() geladen
 library(DT)        # Package wird für Funktion datatable() geladen
-library(gt)        # Package wird für Funktion gt() geladen</code></pre>
+library(gt)        # Package wird für Funktion gt() geladen
+library(janitor)</code></pre>
 </div>
 <div id="daten" class="section level1">
 <h1>Daten</h1>
@@ -284,10 +285,36 @@ preise &lt;- read_csv(&quot;data/supermarkt/preise.csv&quot;)</code></pre>
 <div id="übung-2---daten-erkunden" class="section level2">
 <h2>Übung 2 - Daten erkunden</h2>
 <ol style="list-style-type: decimal">
-<li><p>Nutze die Funktion <code>names()</code> für jeden Dataframe um die Spaltennamen zu erkunden. Über welche Variablen können die Daten zusammengefügt werden?</p></li>
-<li><p>Nutze die Funktion <code>nrow()</code> für jeden Dataframe um die Anzahl Reihen zu identifizieren.</p></li>
-<li><p>Nutze andere Funktionen die dir bekannt sind um die drei Dataframes zu erkunden</p></li>
-<li><p>Strick das Dokument und dann: git add, commit, push alle Veränderung zurück auf GitHub</p></li>
+<li>Nutze die Funktion <code>names()</code> für jeden Dataframe um die Spaltennamen zu erkunden. Über welche Variablen können die Daten zusammengefügt werden?</li>
+<li>Nutze die Funktion <code>nrow()</code> für jeden Dataframe um die Anzahl Reihen zu identifizieren.</li>
+<li>Nutze andere Funktionen die dir bekannt sind um die drei Dataframes zu erkunden</li>
+</ol>
+<pre class="r"><code>names(einkaeufe)</code></pre>
+<pre><code>## [1] &quot;kunden_id&quot;    &quot;produkt_name&quot; &quot;einkauf&quot;      &quot;einheit&quot;</code></pre>
+<pre class="r"><code>names(kundenprofile)</code></pre>
+<pre><code>##  [1] &quot;kunden_id&quot;  &quot;email&quot;      &quot;phone&quot;      &quot;vorname&quot;    &quot;nachname&quot;  
+##  [6] &quot;wohnort&quot;    &quot;kanton&quot;     &quot;plz&quot;        &quot;geburtstag&quot; &quot;alter&quot;</code></pre>
+<pre class="r"><code>names(preise)</code></pre>
+<pre><code>## [1] &quot;produkt_name&quot; &quot;preis&quot;</code></pre>
+<pre class="r"><code>nrow(einkaeufe)</code></pre>
+<pre><code>## [1] 9</code></pre>
+<pre class="r"><code>nrow(kundenprofile)</code></pre>
+<pre><code>## [1] 5</code></pre>
+<pre class="r"><code>nrow(preise)</code></pre>
+<pre><code>## [1] 10</code></pre>
+<pre class="r"><code>tabyl(einkaeufe, kunden_id)</code></pre>
+<pre><code>##  kunden_id n   percent
+##         k1 3 0.3333333
+##         k2 6 0.6666667</code></pre>
+<pre class="r"><code>tabyl(kundenprofile, kunden_id)</code></pre>
+<pre><code>##  kunden_id n percent
+##         k1 1     0.2
+##         k2 1     0.2
+##         k3 1     0.2
+##         k4 1     0.2
+##         k5 1     0.2</code></pre>
+<ol start="4" style="list-style-type: decimal">
+<li>Strick das Dokument und dann: git add, commit, push alle Veränderung zurück auf GitHub</li>
 </ol>
 </div>
 <div id="übung-3---daten-zusammenfügen" class="section level2">
@@ -304,23 +331,25 @@ preise &lt;- read_csv(&quot;data/supermarkt/preise.csv&quot;)</code></pre>
 <p>Schaut euch den Output in der Console jeweils genau an und überlegt welche joins (Zusammenfügungen) für welche Fragestellungen sinnvoll wären.</p>
 <pre class="r"><code># Kombination 1
 
-preise %&gt;% 
-  left_join(einkaeufe)</code></pre>
-<pre><code>## # A tibble: 12 x 5
-##    produkt_name    preis kunden_id einkauf einheit
-##    &lt;chr&gt;           &lt;dbl&gt; &lt;chr&gt;       &lt;dbl&gt; &lt;chr&gt;  
-##  1 Toilettenpapier  14.3 &lt;NA&gt;         NA   &lt;NA&gt;   
-##  2 Chips             3.8 k1            2   anzahl 
-##  3 Blaubeeren        7.8 &lt;NA&gt;         NA   &lt;NA&gt;   
-##  4 Milch             2.2 k1            3   anzahl 
-##  5 Milch             2.2 k2            4   anzahl 
-##  6 Avocado           3.2 k1            1   anzahl 
-##  7 Banane            1.9 &lt;NA&gt;         NA   &lt;NA&gt;   
-##  8 Birne             2.6 k2            0.5 kg     
-##  9 Apfel             4.1 k2            2   kg     
-## 10 Tomate            2.7 k2            1.5 kg     
-## 11 Pfirsich          6.5 k2            2.5 kg     
-## 12 Pfirsich          6.5 k2            1   kg</code></pre>
+einkaeufe %&gt;% 
+  full_join(kundenprofile)</code></pre>
+<pre><code>## # A tibble: 12 x 13
+##    kunden_id produkt_name einkauf einheit email   phone vorname nachname wohnort
+##    &lt;chr&gt;     &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;  
+##  1 k1        Chips            2   anzahl  fabien… 079 … Fabien… Colin    Les En…
+##  2 k1        Milch            3   anzahl  fabien… 079 … Fabien… Colin    Les En…
+##  3 k1        Avocado          1   anzahl  fabien… 079 … Fabien… Colin    Les En…
+##  4 k2        Pfirsich         2.5 kg      carol.… 076 … Carol   Dufour   Oberen…
+##  5 k2        Birne            0.5 kg      carol.… 076 … Carol   Dufour   Oberen…
+##  6 k2        Apfel            2   kg      carol.… 076 … Carol   Dufour   Oberen…
+##  7 k2        Tomate           1.5 kg      carol.… 076 … Carol   Dufour   Oberen…
+##  8 k2        Pfirsich         1   kg      carol.… 076 … Carol   Dufour   Oberen…
+##  9 k2        Milch            4   anzahl  carol.… 076 … Carol   Dufour   Oberen…
+## 10 k3        &lt;NA&gt;            NA   &lt;NA&gt;    silvia… 078 … Silvia  Dumont   Hasle …
+## 11 k4        &lt;NA&gt;            NA   &lt;NA&gt;    valeri… 077 … Valérie Renaud   Koblenz
+## 12 k5        &lt;NA&gt;            NA   &lt;NA&gt;    roger.… 076 … Roger   Leclercq Wilchi…
+## # … with 4 more variables: kanton &lt;chr&gt;, plz &lt;dbl&gt;, geburtstag &lt;date&gt;,
+## #   alter &lt;dbl&gt;</code></pre>
 <pre class="r"><code># Kombination 2
 
 # Schreibt hier eure Beispiele
@@ -329,8 +358,12 @@ preise %&gt;%
 
 # etc. </code></pre>
 <ol start="2" style="list-style-type: decimal">
-<li><p>Starte mit dem Objekt <code>einkauefe</code> und nutze die Funktion <code>left_join()</code> um dieses mit dem Objekt <code>preise</code> zusammenzufügen. Speicher das Ergebnis als ein neues Objekt in deiner Arbeitsumgebung (Environment) mit dem Namen <code>einkaeufe_preise</code>.</p></li>
-<li><p>Strick das Dokument und dann: git add, commit, push alle Veränderung zurück auf GitHub</p></li>
+<li>Starte mit dem Objekt <code>einkauefe</code> und nutze die Funktion <code>left_join()</code> um dieses mit dem Objekt <code>preise</code> zusammenzufügen. Speicher das Ergebnis als ein neues Objekt in deiner Arbeitsumgebung (Environment) mit dem Namen <code>einkaeufe_preise</code>.</li>
+</ol>
+<pre class="r"><code>einkaeufe_preise &lt;- einkaeufe %&gt;% 
+  left_join(preise)</code></pre>
+<ol start="3" style="list-style-type: decimal">
+<li>Strick das Dokument und dann: git add, commit, push alle Veränderung zurück auf GitHub</li>
 </ol>
 </div>
 <div id="übung-4---neue-variable-erstellen" class="section level2">
@@ -338,6 +371,8 @@ preise %&gt;%
 <ol style="list-style-type: decimal">
 <li>Starte mit dem Objekt <code>einkauefe_preise</code> und nutze die Funktion <code>mutate()</code> um eine neue Variable mit dem Namen ‘kosten’ zu erstellen. Das Variable soll eine Multiplikation der Spalte ‘einkauf’ mit der Spalte ‘preis’ beinhalten. Speicher das Ergebnis als ein neues Objekt in deiner Arbeitsumgebung (Environment) mit dem Namen <code>einkaeufe_kosten</code>.</li>
 </ol>
+<pre class="r"><code>einkaeufe_kosten &lt;- einkaeufe_preise %&gt;% 
+  mutate(kosten = einkauf * preis)</code></pre>
 </div>
 <div id="übung-5---daten-zusammenfassen-bonus" class="section level2">
 <h2>Übung 5 - Daten zusammenfassen (Bonus)</h2>
@@ -346,16 +381,14 @@ preise %&gt;%
 <li>Setze die Code-chunk Option von ‘eval=FALSE’ auf ‘eval=TRUE’ um den Code beim nächsten Stricken mit auszuführen.</li>
 </ol>
 <pre class="r"><code>einkaeufe_kosten_sum &lt;- einkaeufe_kosten %&gt;% 
-  group_by(___) %&gt;% 
-  ___(
-    summe = ___
-  )</code></pre>
+  group_by(kunden_id) %&gt;% 
+  summarise(totkosten = sum(kosten))</code></pre>
 <ol start="2" style="list-style-type: decimal">
 <li>Starte mit dem Objekt <code>einkaeufe_kosten_sum</code> und nutze die Funktion <code>left_join()</code> um dieses mit dem Objekt <code>kundenprofile</code> zusammenzufügen. Selektiere dann nur die Spalten ‘vorname’, ‘nachname’, ‘summe’ und ‘email’. Speicher das Ergebnis als ein neues Objekt in deiner Arbeitsumgebung (Environment) mit dem Namen <code>kunden_tab</code>.</li>
 </ol>
 <pre class="r"><code>kunden_tab &lt;- einkaeufe_kosten_sum %&gt;% 
   left_join(kundenprofile) %&gt;% 
-  select(ends_with(&quot;name&quot;), summe, email)</code></pre>
+  select(ends_with(&quot;name&quot;), totkosten, email)</code></pre>
 <ol start="3" style="list-style-type: decimal">
 <li>Strick das Dokument und dann: git add, commit, push alle Veränderung zurück auf GitHub</li>
 </ol>

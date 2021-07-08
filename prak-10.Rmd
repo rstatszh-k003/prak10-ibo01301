@@ -22,6 +22,7 @@ library(tidyverse) # Läd die wichtigsten Packages des Tidyverse gemeinsam
 library(knitr)     # Package wird für Funktion kable() geladen
 library(DT)        # Package wird für Funktion datatable() geladen
 library(gt)        # Package wird für Funktion gt() geladen
+library(janitor)
 ```
 
 # Daten
@@ -59,8 +60,16 @@ preise <- read_csv("data/supermarkt/preise.csv")
 3. Nutze andere Funktionen die dir bekannt sind um die drei Dataframes zu erkunden
 
 ```{r}
+names(einkaeufe)
+names(kundenprofile)
+names(preise)
 
+nrow(einkaeufe)
+nrow(kundenprofile)
+nrow(preise)
 
+tabyl(einkaeufe, kunden_id)
+tabyl(kundenprofile, kunden_id)
 ```
 
 4. Strick das Dokument und dann: git add, commit, push alle Veränderung zurück auf GitHub
@@ -81,8 +90,8 @@ Schaut euch den Output in der Console jeweils genau an und überlegt welche join
 
 # Kombination 1
 
-preise %>% 
-  left_join(einkaeufe)
+einkaeufe %>% 
+  full_join(kundenprofile)
 
 # Kombination 2
 
@@ -98,6 +107,8 @@ preise %>%
 
 ```{r}
 
+einkaeufe_preise <- einkaeufe %>% 
+  left_join(preise)
 
 ```
 
@@ -109,6 +120,8 @@ preise %>%
 
 ```{r}
 
+einkaeufe_kosten <- einkaeufe_preise %>% 
+  mutate(kosten = einkauf * preis)
 
 ```
 
@@ -117,23 +130,21 @@ preise %>%
 1. Starte mit dem Objekt `einkaeufe_kosten` und gruppiere die Daten nach 'kunden_id'. Berechne dann die Summe aus den Kosten um den geschuldeten Betrag der Kund_innen zu berechnen. Speicher das Ergebnis in deiner Arbeitsumgebung mit dem Namen `einkaeufe_kosten_sum`. Ich habe Code mit Lücken für dich vorbereitet.
 2. Setze die Code-chunk Option von 'eval=FALSE' auf 'eval=TRUE' um den Code beim nächsten Stricken mit auszuführen.
 
-```{r, eval=FALSE}
+```{r}
 
 einkaeufe_kosten_sum <- einkaeufe_kosten %>% 
-  group_by(___) %>% 
-  ___(
-    summe = ___
-  )
+  group_by(kunden_id) %>% 
+  summarise(totkosten = sum(kosten))
 
 ```
 
 2. Starte mit dem Objekt `einkaeufe_kosten_sum` und nutze die Funktion `left_join()` um dieses mit dem Objekt `kundenprofile` zusammenzufügen. Selektiere dann nur die Spalten 'vorname', 'nachname', 'summe' und 'email'. Speicher das Ergebnis als ein neues Objekt in deiner Arbeitsumgebung (Environment) mit dem Namen `kunden_tab`.
 
-```{r, eval=F}
+```{r}
 
 kunden_tab <- einkaeufe_kosten_sum %>% 
   left_join(kundenprofile) %>% 
-  select(ends_with("name"), summe, email)
+  select(ends_with("name"), totkosten, email)
 
 ```
 
